@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class BoardPiece
 {
-	public ColorType ColorType = ColorType.None;
+	public ColorType currentColor = ColorType.None;
 	public GameObject PieceObj;
 
 	public void Setup(GameObject obj, ColorType colorType)
@@ -13,9 +13,14 @@ public class BoardPiece
 		UpdateColorType(colorType);
 	}
 
-	public void UpdateColorType(ColorType colorType)
+	public void Reverse()
 	{
-		ColorType = colorType;
+		UpdateColorType(currentColor == ColorType.White ? ColorType.Black : ColorType.White);
+	}
+
+	private void UpdateColorType(ColorType colorType)
+	{
+		currentColor = colorType;
 		PieceObj.transform.localRotation =
 			Quaternion.Euler(
 				PieceObj.transform.localRotation.x,

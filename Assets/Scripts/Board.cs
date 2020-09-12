@@ -7,7 +7,8 @@ public class Board : MonoBehaviour, IBoard
 {
 	static readonly int MAX_WIDTH = 8;
 
-	BoardPiece[,] m_BoardPieces = new BoardPiece[MAX_WIDTH, MAX_WIDTH];
+	readonly BoardPiece[,] m_BoardPieces = new BoardPiece[MAX_WIDTH, MAX_WIDTH];
+	public BoardPiece GetPiece(Address pos) => m_BoardPieces[pos.Row, pos.Column];
 
 	[SerializeField] private GameObject m_pieceObj;
 
@@ -40,13 +41,13 @@ public class Board : MonoBehaviour, IBoard
 
 	public void PutPiece(Address pos, ColorType colorType)
 	{
-		if (m_BoardPieces[pos.Row, pos.Column].ColorType != ColorType.None)
+		if (GetPiece(pos).currentColor != ColorType.None)
 		{
 			return;
 		}
 
 		var pieceObj = Instantiate(m_pieceObj, new Vector3(pos.Row, 1f, -pos.Column), Quaternion.identity);
-		m_BoardPieces[pos.Row, pos.Column].Setup(pieceObj, colorType); 
+		GetPiece(pos).Setup(pieceObj, colorType); 
 	}
 }
 
