@@ -2,14 +2,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BoardPiece
+public class BoardParts : MonoBehaviour, IBoardParts
 {
-	public ColorType currentColor = ColorType.None;
-	public GameObject PieceObj;
+	[SerializeField] private GameObject m_focusEffectObj;
 
-	public void Setup(GameObject obj, ColorType colorType)
+	public ColorType currentColor = ColorType.None;
+
+	public GameObject PieceObj { get; set; }
+
+	public void PutPiece(GameObject pieceObj, ColorType colorType)
 	{
-		PieceObj = obj;
+		PieceObj = pieceObj;
 		UpdateColorType(colorType);
 	}
 
@@ -28,6 +31,10 @@ public class BoardPiece
 				colorType == ColorType.Black ? 0f : 180f
 			);
 	}
+
+	public void Focus() => m_focusEffectObj.SetActive(true);
+	public void UnFocus() => m_focusEffectObj.SetActive(false);
+	public bool IsFocus => m_focusEffectObj.activeSelf;
 }
 
 public enum ColorType

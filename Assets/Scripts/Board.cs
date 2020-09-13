@@ -7,24 +7,24 @@ public class Board : MonoBehaviour, IBoard
 {
 	static readonly int MAX_WIDTH = 8;
 
-	readonly BoardPiece[,] m_BoardPieces = new BoardPiece[MAX_WIDTH, MAX_WIDTH];
-	public BoardPiece GetPiece(Address pos) => m_BoardPieces[pos.Row, pos.Column];
+	public BoardParts GetPiece(Address pos) => m_BoardParts[pos.Row, pos.Column];
+
+	readonly BoardParts[,] m_BoardParts = new BoardParts[MAX_WIDTH, MAX_WIDTH];
 
 	[SerializeField] private GameObject m_pieceObj;
 
-	public Board()
+	void Start()
 	{
 		for (int row = 0; row < MAX_WIDTH; row++)
 		{
+			GameObject rowObj = GameObject.Find($"Row_{row + 1}");
 			for (int column = 0; column < MAX_WIDTH; column++)
 			{
-				m_BoardPieces[row, column] = new BoardPiece();
+				GameObject targetParts = rowObj.FindChild($"Column_{column + 1}");
+				m_BoardParts[row, column] = targetParts.GetComponent<BoardParts>();
 			}
 		}
-	}
 
-	void Start()
-	{
 		PutPiece(new Address(3, 3), ColorType.White);
 		PutPiece(new Address(4, 3), ColorType.Black);
 		PutPiece(new Address(3, 4), ColorType.Black);
@@ -33,9 +33,13 @@ public class Board : MonoBehaviour, IBoard
 
 	void Update()
 	{
+		// if (Input.GetKey(KeyCode.Space))
+		// {
+		// 	PutPiece(new Address(3, 1), ColorType.White);
+		// }
 		if (Input.GetKey(KeyCode.Space))
 		{
-			PutPiece(new Address(3, 1), ColorType.White);
+			GetPiece(new Address(3, 1)).Focus();
 		}
 	}
 
@@ -47,7 +51,7 @@ public class Board : MonoBehaviour, IBoard
 		}
 
 		var pieceObj = Instantiate(m_pieceObj, new Vector3(pos.Row, 1f, -pos.Column), Quaternion.identity);
-		GetPiece(pos).Setup(pieceObj, colorType); 
+		GetPiece(pos).PutPiece(pieceObj, colorType); 
 	}
 }
 
