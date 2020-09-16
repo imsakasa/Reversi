@@ -13,6 +13,8 @@ public class Board : MonoBehaviour, IBoard
 
 	[SerializeField] private GameObject m_pieceObj;
 
+	private ColorType m_currentColorType = ColorType.White;
+
 	void Start()
 	{
 		for (int row = 0; row < MAX_WIDTH; row++)
@@ -22,36 +24,41 @@ public class Board : MonoBehaviour, IBoard
 			{
 				GameObject targetParts = rowObj.FindChild($"Column_{column + 1}");
 				m_BoardParts[row, column] = targetParts.GetComponent<BoardParts>();
+				m_BoardParts[row, column].Setup(new Address(row, column), PutPiece);
 			}
 		}
 
-		PutPiece(new Address(3, 3), ColorType.White);
-		PutPiece(new Address(4, 3), ColorType.Black);
-		PutPiece(new Address(3, 4), ColorType.Black);
-		PutPiece(new Address(4, 4), ColorType.White);
+		PutPiece(new Address(3, 3));
+		PutPiece(new Address(4, 3));
+		PutPiece(new Address(4, 4));
+		PutPiece(new Address(3, 4));
 	}
 
 	void Update()
 	{
-		// if (Input.GetKey(KeyCode.Space))
-		// {
-		// 	PutPiece(new Address(3, 1), ColorType.White);
-		// }
 		if (Input.GetKey(KeyCode.Space))
 		{
 			GetPiece(new Address(3, 1)).Focus();
 		}
 	}
 
-	public void PutPiece(Address pos, ColorType colorType)
+	public void PutPiece(Address pos)
 	{
-		if (GetPiece(pos).currentColor != ColorType.None)
+		if (GetPiece(pos).CurrentColor != ColorType.None)
 		{
 			return;
 		}
 
-		var pieceObj = Instantiate(m_pieceObj, new Vector3(pos.Row, 1f, -pos.Column), Quaternion.identity);
-		GetPiece(pos).PutPiece(pieceObj, colorType); 
+		var pieceObj = Instantiate(m_pieceObj, new Vector3(pos.Column, 1f, -pos.Row), Quaternion.identity);
+		GetPiece(pos).PutPiece(pieceObj, m_currentColorType);
+
+		ChangeTurn();
+	}
+
+	private void ChangeTurn()
+	{
+		m_currentColorType = (m_currentColorType == ColorType.Black) ?
+			ColorType.White : ColorType.Black;
 	}
 }
 
