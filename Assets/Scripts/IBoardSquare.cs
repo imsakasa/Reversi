@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface IBoardParts
+public interface IBoardSquare
 {
 	void PutPiece(GameObject pieceObj, ColorType colorType);
 	void Focus();

@@ -5,26 +5,28 @@ using UnityEngine;
 
 public class Board : MonoBehaviour, IBoard
 {
-	static readonly int MAX_WIDTH = 8;
+	/// <summary>
+	/// 左上が(0,0)、右下が(7, 7)の 8 × 8 マスの盤
+	/// </summary>
+	readonly BoardSquare[,] m_BoardSquares = new BoardSquare[Address.MAX_WIDTH, Address.MAX_WIDTH];
+	public BoardSquare GetSquare(Address pos) => m_BoardSquares[pos.X, pos.Y];
 
-	public BoardParts GetPiece(Address pos) => m_BoardParts[pos.Row, pos.Column];
+	private BoardAnalyzer m_BoardAnalyzer = new BoardAnalyzer();
 
-	readonly BoardParts[,] m_BoardParts = new BoardParts[MAX_WIDTH, MAX_WIDTH];
+	[SerializeField] private GameObject m_PieceObj;
 
-	[SerializeField] private GameObject m_pieceObj;
-
-	private ColorType m_currentColorType = ColorType.White;
+	private ColorType m_CurrentColorType = ColorType.White;
 
 	void Start()
 	{
-		for (int row = 0; row < MAX_WIDTH; row++)
+		for (int y = 0; y < Address.MAX_WIDTH; y++)
 		{
-			GameObject rowObj = GameObject.Find($"Row_{row + 1}");
-			for (int column = 0; column < MAX_WIDTH; column++)
+			GameObject rowObj = GameObject.Find($"Row_{y + 1}");
+			for (int x = 0; x < Address.MAX_WIDTH; x++)
 			{
-				GameObject targetParts = rowObj.FindChild($"Column_{column + 1}");
-				m_BoardParts[row, column] = targetParts.GetComponent<BoardParts>();
-				m_BoardParts[row, column].Setup(new Address(row, column), PutPiece);
+				GameObject targetParts = rowObj.FindChild($"Column_{x + 1}");
+				m_BoardSquares[x, y] = targetParts.GetComponent<BoardSquare>();
+				m_BoardSquares[x, y].Setup(new Address(x, y), PutPiece);
 			}
 		}
 
@@ -34,42 +36,52 @@ public class Board : MonoBehaviour, IBoard
 		PutPiece(new Address(3, 4));
 	}
 
-	void Update()
-	{
-		if (Input.GetKey(KeyCode.Space))
-		{
-			GetPiece(new Address(3, 1)).Focus();
-		}
-	}
-
 	public void PutPiece(Address pos)
 	{
-		if (GetPiece(pos).CurrentColor != ColorType.None)
+		// そこには置けない
+		if (!m_BoardAnalyzer.CanPutPiece(m_BoardSquares, pos))
 		{
 			return;
 		}
 
-		var pieceObj = Instantiate(m_pieceObj, new Vector3(pos.Column, 1f, -pos.Row), Quaternion.identity);
-		GetPiece(pos).PutPiece(pieceObj, m_currentColorType);
+		var pieceObj = Instantiate(m_PieceObj, new Vector3(pos.X, 1f, -pos.Y), Quaternion.identity);
+		GetSquare(pos).PutPiece(pieceObj, m_CurrentColorType);
 
 		ChangeTurn();
 	}
 
 	private void ChangeTurn()
 	{
-		m_currentColorType = (m_currentColorType == ColorType.Black) ?
+		m_CurrentColorType = (m_CurrentColorType == ColorType.Black) ?
 			ColorType.White : ColorType.Black;
 	}
 }
 
 public struct Address
 {
-	public int Row;
-	public int Column;
+	public static readonly int MAX_WIDTH = 8;
 
-	public Address(int row, int column)
+	public int X;
+	public int Y;
+
+	public Address(int x, int y)
 	{
-		Row = row;
-		Column = column;
+		X = x;
+		Y = y;
+	}
+
+	public bool IsValid()
+	{
+		if (X >= MAX_WIDTH || 0 > X)
+		{
+			return false;
+		}
+
+		if (Y >= MAX_WIDTH || 0 > Y)
+		{
+			return false;
+		}
+
+		return true;
 	}
 }

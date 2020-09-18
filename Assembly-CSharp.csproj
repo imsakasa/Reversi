@@ -37,11 +37,11 @@
   </PropertyGroup>
   <ItemGroup>
      <Compile Include="Assets\Scripts\Board.cs" />
-     <Compile Include="Assets\Scripts\BoardManager.cs" />
-     <Compile Include="Assets\Scripts\BoardParts.cs" />
-     <Compile Include="Assets\Scripts\Extension\GameObjectExtension.cs" />
+     <Compile Include="Assets\Scripts\BoardAnalyzer.cs" />
+     <Compile Include="Assets\Scripts\BoardSquare.cs" />
+     <Compile Include="Assets\Scripts\Extension\GameObjectExtensions.cs" />
      <Compile Include="Assets\Scripts\IBoard.cs" />
-     <Compile Include="Assets\Scripts\IBoardParts.cs" />
+     <Compile Include="Assets\Scripts\IBoardSquare.cs" />
      <Compile Include="Assets\Scripts\Player.cs" />
     <Reference Include="UnityEngine">
         <HintPath>/Applications/Unity/Hub/Editor/2019.4.0f1/Unity.app/Contents/Managed/UnityEngine/UnityEngine.dll</HintPath>

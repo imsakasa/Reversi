@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public static class GameObjectExtension
+public static class GameObjectExtensions
 {
 	public static GameObject FindChild(this GameObject parent, string name)
 	{
