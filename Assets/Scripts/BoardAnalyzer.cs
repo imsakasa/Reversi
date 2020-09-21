@@ -5,6 +5,19 @@ using UnityEngine;
 
 public class BoardAnalyzer
 {
+	private enum Direction
+	{
+		Invalid,
+		Up,
+		Down,
+		Left,
+		Right,
+		UpperLeft,
+		UpperRight,
+		LowerLeft,
+		LowerRight,
+	}
+
 	private BoardSquare GetSquare(BoardSquare[,] squares, Address pos) => squares[pos.X, pos.Y];
 
 	public bool CanPutPiece(BoardSquare[,] boardSquares, PieceColorType currentTurnColor, Address pos)
@@ -16,9 +29,35 @@ public class BoardAnalyzer
 			return false;
 		}
 
-		var adjacentSquares = GetAdjacentSquares(boardSquares, pos);
-		var targetColorSquare = GetTargetColorSquare(adjacentSquares, BoardSquare.GetReverseColor(currentTurnColor));
-		if (targetColorSquare.Count == 0)
+		var adjacentSquareDic = GetAdjacentSquares(boardSquares, pos);
+		var targetColorSquareDic = GetTargetColorSquare(boardSquares, adjacentSquareDic, BoardSquare.GetReverseColor(currentTurnColor));
+		if (targetColorSquareDic.Count == 0)
+		{
+			Debug.LogError("===このマスには置けません==");
+			return false;
+		}
+
+		var enablePutDirection = new List<Direction>();
+		foreach (var item in targetColorSquareDic)
+		{
+			Address currentSearchPos = item.Value;
+			while (true)
+			{
+				Address searchPos = GetDirectionPos(item.Key, currentSearchPos);
+				if (!searchPos.IsValid())
+				{
+					break;
+				}
+				if (GetSquare(boardSquares, searchPos).CurrentColor == currentTurnColor)
+				{
+					enablePutDirection.Add(item.Key);
+					break;
+				}
+				currentSearchPos = searchPos;
+			}
+		}
+
+		if (enablePutDirection.Count == 0)
 		{
 			Debug.LogError("===このマスには置けません==");
 			return false;
@@ -27,28 +66,50 @@ public class BoardAnalyzer
 		return true;
 	}
 
-	private List<BoardSquare> GetAdjacentSquares(BoardSquare[,] boardSquares, Address pos)
+	// private bool IsExistTargetColorLine(KeyValuePair<Direction, Address> keyValue, PieceColorType targetColor)
+	// {
+
+	// }
+
+	private Dictionary<Direction, Address> GetAdjacentSquares(BoardSquare[,] boardSquares, Address pos)
 	{
-		var adjacentSquares = new List<BoardSquare>();
+		var adjacentSquareDic = new Dictionary<Direction, Address>();
 
 		// 隣接するマスを取得(最大8マス)
-		TryRegisterSquare(GetUpPos(pos), 			boardSquares, adjacentSquares);
-		TryRegisterSquare(GetDownPos(pos), 			boardSquares, adjacentSquares);
-		TryRegisterSquare(GetRightPos(pos), 		boardSquares, adjacentSquares);
-		TryRegisterSquare(GetLeftPos(pos), 			boardSquares, adjacentSquares);
-		TryRegisterSquare(GetUpperRightPos(pos), 	boardSquares, adjacentSquares);
-		TryRegisterSquare(GetUpperLeftPos(pos), 	boardSquares, adjacentSquares);
-		TryRegisterSquare(GetLowerRightPos(pos), 	boardSquares, adjacentSquares);
-		TryRegisterSquare(GetLowerLeftPos(pos), 	boardSquares, adjacentSquares);
+		TryRegisterSquare(Direction.Up,	pos, adjacentSquareDic);
+		TryRegisterSquare(Direction.Down, pos, adjacentSquareDic);
+		TryRegisterSquare(Direction.Left, pos, adjacentSquareDic);
+		TryRegisterSquare(Direction.Right, pos, adjacentSquareDic);
+		TryRegisterSquare(Direction.UpperLeft, pos, adjacentSquareDic);
+		TryRegisterSquare(Direction.UpperRight, pos, adjacentSquareDic);
+		TryRegisterSquare(Direction.LowerLeft, pos, adjacentSquareDic);
+		TryRegisterSquare(Direction.LowerRight, pos, adjacentSquareDic);
 
-		return adjacentSquares;
+		return adjacentSquareDic;
 	}
 
-	private void TryRegisterSquare(Address registerPos, BoardSquare[,] boardSquares, List<BoardSquare> squareList)
+	private void TryRegisterSquare(Direction direction, Address pos, Dictionary<Direction, Address> squareDic)
 	{
+		Address registerPos = GetDirectionPos(direction, pos);
 		if (registerPos.IsValid())
 		{
-			squareList.Add(GetSquare(boardSquares, registerPos));
+			squareDic.Add(direction, registerPos);
+		}
+	}
+
+	private Address GetDirectionPos(Direction direction, Address pos)
+	{
+		switch (direction)
+		{
+			case Direction.Up: return GetUpPos(pos);
+			case Direction.Down: return GetDownPos(pos);
+			case Direction.Left: return GetLeftPos(pos);
+			case Direction.Right: return GetRightPos(pos);
+			case Direction.UpperLeft: return GetUpperLeftPos(pos);
+			case Direction.UpperRight: return GetUpperRightPos(pos);
+			case Direction.LowerLeft: return GetLowerLeftPos(pos);
+			case Direction.LowerRight: return GetLowerRightPos(pos);
+			default: return new Address(-1, -1);
 		}
 	}
 
@@ -132,14 +193,14 @@ public class BoardAnalyzer
 		return new Address(pos.X - 1, pos.Y + 1);
 	}
 
-	private List<BoardSquare> GetTargetColorSquare(List<BoardSquare> squares, PieceColorType pieceColorType)
+	private Dictionary<Direction, Address> GetTargetColorSquare(BoardSquare[,] boardSquares, Dictionary<Direction, Address> squareDic, PieceColorType pieceColorType)
 	{
-		var resultSquare = new List<BoardSquare>();
-		if (squares.Count == 0)
+		var resultSquareDic = new Dictionary<Direction, Address>();
+		if (squareDic.Count == 0)
 		{
-			return resultSquare;
+			return resultSquareDic;
 		}
 
-		return squares.Where(square => square.CurrentColor == pieceColorType).ToList();
+		return squareDic.Where(square => GetSquare(boardSquares, square.Value).CurrentColor == pieceColorType).ToDictionary(s => s.Key, s => s.Value);
 	}
 }

@@ -35,12 +35,17 @@ public class Board : MonoBehaviour, IBoard
 		CreateAndPutPiece(new Address(3, 4), PieceColorType.Black);
 		CreateAndPutPiece(new Address(4, 4), PieceColorType.White);
 
-		m_CurrentTurnColor = PieceColorType.White;
+		SetCurrentTurn(PieceColorType.White);
+	}
+
+	private void SetCurrentTurn(PieceColorType colorType)
+	{
+		m_CurrentTurnColor = colorType;
+		BoardManager.I.SetCurrentTurnText(colorType);
 	}
 
 	public void TryPutPiece(Address pos)
 	{
-		// そこには置けない
 		if (!m_BoardAnalyzer.CanPutPiece(m_BoardSquares, m_CurrentTurnColor, pos))
 		{
 			return;
@@ -58,8 +63,10 @@ public class Board : MonoBehaviour, IBoard
 
 	private void ChangeTurn()
 	{
-		m_CurrentTurnColor = (m_CurrentTurnColor == PieceColorType.Black) ?
+		PieceColorType changeColorType = (m_CurrentTurnColor == PieceColorType.Black) ?
 			PieceColorType.White : PieceColorType.Black;
+
+		SetCurrentTurn(changeColorType);
 	}
 }
 
