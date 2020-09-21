@@ -29,35 +29,8 @@ public class BoardAnalyzer
 			return false;
 		}
 
-		var adjacentSquareDic = GetAdjacentSquares(boardSquares, pos);
-		var targetColorSquareDic = GetTargetColorSquare(boardSquares, adjacentSquareDic, BoardSquare.GetReverseColor(currentTurnColor));
-		if (targetColorSquareDic.Count == 0)
-		{
-			Debug.LogError("===このマスには置けません==");
-			return false;
-		}
-
-		var enablePutDirection = new List<Direction>();
-		foreach (var item in targetColorSquareDic)
-		{
-			Address currentSearchPos = item.Value;
-			while (true)
-			{
-				Address searchPos = GetDirectionPos(item.Key, currentSearchPos);
-				if (!searchPos.IsValid())
-				{
-					break;
-				}
-				if (GetSquare(boardSquares, searchPos).CurrentColor == currentTurnColor)
-				{
-					enablePutDirection.Add(item.Key);
-					break;
-				}
-				currentSearchPos = searchPos;
-			}
-		}
-
-		if (enablePutDirection.Count == 0)
+		var reverseTargetSquareList = GetReverseTargetSquares(boardSquares, pos, currentTurnColor);
+		if (reverseTargetSquareList.Count == 0)
 		{
 			Debug.LogError("===このマスには置けません==");
 			return false;
@@ -65,11 +38,6 @@ public class BoardAnalyzer
 
 		return true;
 	}
-
-	// private bool IsExistTargetColorLine(KeyValuePair<Direction, Address> keyValue, PieceColorType targetColor)
-	// {
-
-	// }
 
 	private Dictionary<Direction, Address> GetAdjacentSquares(BoardSquare[,] boardSquares, Address pos)
 	{
@@ -113,85 +81,14 @@ public class BoardAnalyzer
 		}
 	}
 
-	private Address GetUpPos(Address pos)
-	{
-		if (pos.Y == 0)
-		{
-			return new Address(-1, -1);
-		}
-
-		return new Address(pos.X, pos.Y - 1);
-	}
-
-	private Address GetDownPos(Address pos)
-	{
-		if (pos.Y == Address.MAX_WIDTH - 1)
-		{
-			return new Address(-1, -1);
-		}
-
-		return new Address(pos.X, pos.Y + 1);
-	}
-
-	private Address GetRightPos(Address pos)
-	{
-		if (pos.X == Address.MAX_WIDTH - 1)
-		{
-			return new Address(-1, -1);
-		}
-
-		return new Address(pos.X + 1, pos.Y);
-	}
-
-	private Address GetLeftPos(Address pos)
-	{
-		if (pos.X == 0)
-		{
-			return new Address(-1, -1);
-		}
-
-		return new Address(pos.X - 1, pos.Y);
-	}
-
-	private Address GetUpperRightPos(Address pos)
-	{
-		if (pos.X == Address.MAX_WIDTH - 1 && pos.Y == 0)
-		{
-			return new Address(-1, -1);
-		}
-
-		return new Address(pos.X + 1, pos.Y - 1);
-	}
-
-	private Address GetUpperLeftPos(Address pos)
-	{
-		if (pos.X == 0 && pos.Y == 0)
-		{
-			return new Address(-1, -1);
-		}
-
-		return new Address(pos.X - 1, pos.Y - 1);
-	}
-
-	private Address GetLowerRightPos(Address pos)
-	{
-		if (pos.X == Address.MAX_WIDTH - 1 && pos.Y == Address.MAX_WIDTH - 1)
-		{
-			return new Address(-1, -1);
-		}
-
-		return new Address(pos.X + 1, pos.Y + 1);
-	}
-
-	private Address GetLowerLeftPos(Address pos)
-	{
-		if (pos.X == 0 && pos.Y == Address.MAX_WIDTH - 1)
-		{
-			return new Address(-1, -1);
-		}
-
-		return new Address(pos.X - 1, pos.Y + 1);
-	}
+	private Address GetUpPos(Address pos) => new Address(pos.X, pos.Y - 1);
+	private Address GetDownPos(Address pos) => new Address(pos.X, pos.Y + 1);
+	private Address GetRightPos(Address pos) => new Address(pos.X + 1, pos.Y);
+	private Address GetLeftPos(Address pos) => new Address(pos.X - 1, pos.Y);
+	private Address GetUpperRightPos(Address pos) => new Address(pos.X + 1, pos.Y - 1);
+	private Address GetUpperLeftPos(Address pos) => new Address(pos.X - 1, pos.Y - 1);
+	private Address GetLowerRightPos(Address pos) => new Address(pos.X + 1, pos.Y + 1);
+	private Address GetLowerLeftPos(Address pos) => new Address(pos.X - 1, pos.Y + 1);
 
 	private Dictionary<Direction, Address> GetTargetColorSquare(BoardSquare[,] boardSquares, Dictionary<Direction, Address> squareDic, PieceColorType pieceColorType)
 	{
@@ -202,5 +99,52 @@ public class BoardAnalyzer
 		}
 
 		return squareDic.Where(square => GetSquare(boardSquares, square.Value).CurrentColor == pieceColorType).ToDictionary(s => s.Key, s => s.Value);
+	}
+
+	public List<BoardSquare> GetReverseTargetSquares(BoardSquare[,] boardSquares, Address putPos, PieceColorType currentColor)
+	{
+		var reverseTargetSquareList = new List<BoardSquare>();
+
+		// 隣接するマスを取得(最大8マス)
+		var adjacentSquareDic = GetAdjacentSquares(boardSquares, putPos);
+		// 隣接するマスから現在の色と反対色のマスを取得
+		var reverseColorSquareDic = GetTargetColorSquare(boardSquares, adjacentSquareDic, BoardSquare.GetReverseColor(currentColor));
+		if (reverseColorSquareDic.Count == 0)
+		{
+			return reverseTargetSquareList;
+		}
+
+		foreach (var item in reverseColorSquareDic)
+		{
+			Address currentSearchPos = item.Value;
+			var reservationSquareList = new List<BoardSquare>();
+			reservationSquareList.Add(GetSquare(boardSquares, currentSearchPos));
+			while (true)
+			{
+				Address searchPos = GetDirectionPos(item.Key, currentSearchPos);
+				if (!searchPos.IsValid())
+				{
+					break;
+				}
+
+				var square = GetSquare(boardSquares, searchPos);
+				if (square.CurrentColor == currentColor)
+				{
+					reverseTargetSquareList.AddRange(reservationSquareList);
+					break;
+				}
+				else if (square.CurrentColor == BoardSquare.GetReverseColor(currentColor))
+				{
+					reservationSquareList.Add(square);
+				}
+				else if(square.CurrentColor == PieceColorType.None)
+				{
+					break;
+				}
+				currentSearchPos = searchPos;
+			}
+		}
+
+		return reverseTargetSquareList;
 	}
 }

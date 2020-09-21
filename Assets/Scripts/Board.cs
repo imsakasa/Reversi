@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Board : MonoBehaviour, IBoard
+public class Board : MonoBehaviour
 {
 	/// <summary>
 	/// 左上が(0,0)、右下が(7, 7)の 8 × 8 マスの盤
@@ -44,14 +44,16 @@ public class Board : MonoBehaviour, IBoard
 		BoardManager.I.SetCurrentTurnText(colorType);
 	}
 
-	public void TryPutPiece(Address pos)
+	private void TryPutPiece(Address putPos)
 	{
-		if (!m_BoardAnalyzer.CanPutPiece(m_BoardSquares, m_CurrentTurnColor, pos))
+		if (!m_BoardAnalyzer.CanPutPiece(m_BoardSquares, m_CurrentTurnColor, putPos))
 		{
 			return;
 		}
 
-		CreateAndPutPiece(pos, m_CurrentTurnColor);
+		CreateAndPutPiece(putPos, m_CurrentTurnColor);
+		ReverseSandwichedPieces(putPos);
+
 		ChangeTurn();
 	}
 
@@ -59,6 +61,15 @@ public class Board : MonoBehaviour, IBoard
 	{
 		var pieceObj = Instantiate(m_PieceObj, new Vector3(pos.X, 1f, -pos.Y), Quaternion.identity);
 		GetSquare(pos).PutPiece(pieceObj, pieceColorType);
+	}
+
+	private void ReverseSandwichedPieces(Address putPos)
+	{
+		var reverseTargetSquares = m_BoardAnalyzer.GetReverseTargetSquares(m_BoardSquares, putPos, m_CurrentTurnColor);
+		for (int i = 0; i < reverseTargetSquares.Count; i++)
+		{
+			reverseTargetSquares[i].Reverse();
+		}
 	}
 
 	private void ChangeTurn()

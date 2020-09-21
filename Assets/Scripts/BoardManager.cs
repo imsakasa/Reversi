@@ -19,11 +19,6 @@ public sealed class BoardManager : MonoBehaviour
 		}
 	}
 
-	public BoardManager()
-	{
-
-	}
-
 	public void SetCurrentTurnText(PieceColorType colorType)
 	{
 		m_BoardUI.SetCurrentTurnText(colorType);
