@@ -1,20 +1,28 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class BoardAnalyzer
 {
 	private BoardSquare GetSquare(BoardSquare[,] squares, Address pos) => squares[pos.X, pos.Y];
 
-	public bool CanPutPiece(BoardSquare[,] boardSquares, Address pos)
+	public bool CanPutPiece(BoardSquare[,] boardSquares, PieceColorType currentTurnColor, Address pos)
 	{
 		var square = GetSquare(boardSquares, pos);
 		if (!square.IsEmpty())
 		{
+			Debug.LogError("===このマスはすでに置かれています==");
 			return false;
 		}
 
-		var list = GetAdjacentSquares(boardSquares, pos);
+		var adjacentSquares = GetAdjacentSquares(boardSquares, pos);
+		var targetColorSquare = GetTargetColorSquare(adjacentSquares, BoardSquare.GetReverseColor(currentTurnColor));
+		if (targetColorSquare.Count == 0)
+		{
+			Debug.LogError("===このマスには置けません==");
+			return false;
+		}
 
 		return true;
 	}
@@ -23,7 +31,7 @@ public class BoardAnalyzer
 	{
 		var adjacentSquares = new List<BoardSquare>();
 
-		// 隣接するマスを取得
+		// 隣接するマスを取得(最大8マス)
 		TryRegisterSquare(GetUpPos(pos), 			boardSquares, adjacentSquares);
 		TryRegisterSquare(GetDownPos(pos), 			boardSquares, adjacentSquares);
 		TryRegisterSquare(GetRightPos(pos), 		boardSquares, adjacentSquares);
@@ -122,5 +130,16 @@ public class BoardAnalyzer
 		}
 
 		return new Address(pos.X - 1, pos.Y + 1);
+	}
+
+	private List<BoardSquare> GetTargetColorSquare(List<BoardSquare> squares, PieceColorType pieceColorType)
+	{
+		var resultSquare = new List<BoardSquare>();
+		if (squares.Count == 0)
+		{
+			return resultSquare;
+		}
+
+		return squares.Where(square => square.CurrentColor == pieceColorType).ToList();
 	}
 }

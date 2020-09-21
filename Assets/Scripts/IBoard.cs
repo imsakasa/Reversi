@@ -1,4 +1,4 @@
 ﻿public interface IBoard
 {
-	void PutPiece(Address address);
+	void TryPutPiece(Address address);
 }

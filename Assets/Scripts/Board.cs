@@ -15,7 +15,7 @@ public class Board : MonoBehaviour, IBoard
 
 	[SerializeField] private GameObject m_PieceObj;
 
-	private ColorType m_CurrentColorType = ColorType.White;
+	private PieceColorType m_CurrentTurnColor;
 
 	void Start()
 	{
@@ -26,34 +26,40 @@ public class Board : MonoBehaviour, IBoard
 			{
 				GameObject targetParts = rowObj.FindChild($"Column_{x + 1}");
 				m_BoardSquares[x, y] = targetParts.GetComponent<BoardSquare>();
-				m_BoardSquares[x, y].Setup(new Address(x, y), PutPiece);
+				m_BoardSquares[x, y].Setup(new Address(x, y), TryPutPiece);
 			}
 		}
 
-		PutPiece(new Address(3, 3));
-		PutPiece(new Address(4, 3));
-		PutPiece(new Address(4, 4));
-		PutPiece(new Address(3, 4));
+		CreateAndPutPiece(new Address(4, 3), PieceColorType.Black);
+		CreateAndPutPiece(new Address(3, 3), PieceColorType.White);
+		CreateAndPutPiece(new Address(3, 4), PieceColorType.Black);
+		CreateAndPutPiece(new Address(4, 4), PieceColorType.White);
+
+		m_CurrentTurnColor = PieceColorType.White;
 	}
 
-	public void PutPiece(Address pos)
+	public void TryPutPiece(Address pos)
 	{
 		// そこには置けない
-		if (!m_BoardAnalyzer.CanPutPiece(m_BoardSquares, pos))
+		if (!m_BoardAnalyzer.CanPutPiece(m_BoardSquares, m_CurrentTurnColor, pos))
 		{
 			return;
 		}
 
-		var pieceObj = Instantiate(m_PieceObj, new Vector3(pos.X, 1f, -pos.Y), Quaternion.identity);
-		GetSquare(pos).PutPiece(pieceObj, m_CurrentColorType);
-
+		CreateAndPutPiece(pos, m_CurrentTurnColor);
 		ChangeTurn();
+	}
+
+	private void CreateAndPutPiece(Address pos, PieceColorType pieceColorType)
+	{
+		var pieceObj = Instantiate(m_PieceObj, new Vector3(pos.X, 1f, -pos.Y), Quaternion.identity);
+		GetSquare(pos).PutPiece(pieceObj, pieceColorType);
 	}
 
 	private void ChangeTurn()
 	{
-		m_CurrentColorType = (m_CurrentColorType == ColorType.Black) ?
-			ColorType.White : ColorType.Black;
+		m_CurrentTurnColor = (m_CurrentTurnColor == PieceColorType.Black) ?
+			PieceColorType.White : PieceColorType.Black;
 	}
 }
 

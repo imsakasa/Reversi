@@ -7,8 +7,8 @@ public class BoardSquare : MonoBehaviour, IBoardSquare
 {
 	[SerializeField] private GameObject m_FocusEffectObj;
 
-	private ColorType m_CurrentColor = ColorType.None;
-	public ColorType CurrentColor => m_CurrentColor;
+	private PieceColorType m_CurrentColor = PieceColorType.None;
+	public PieceColorType CurrentColor => m_CurrentColor;
 
 	private GameObject m_PieceObj { get; set; }
 	private Address m_Address;
@@ -21,27 +21,29 @@ public class BoardSquare : MonoBehaviour, IBoardSquare
 		m_onPressed = onPredded;
 	}
 
-	public void PutPiece(GameObject pieceObj, ColorType colorType)
+	public void PutPiece(GameObject pieceObj, PieceColorType pieceColorType)
 	{
 		m_PieceObj = pieceObj;
-		UpdateColorType(colorType);
+		UpdateColorType(pieceColorType);
 	}
 
 	public void Reverse()
 	{
-		UpdateColorType(m_CurrentColor == ColorType.White ? ColorType.Black : ColorType.White);
+		UpdateColorType(GetReverseColor(m_CurrentColor));
 	}
 
-	private void UpdateColorType(ColorType colorType)
+	private void UpdateColorType(PieceColorType colorType)
 	{
 		m_CurrentColor = colorType;
 		m_PieceObj.transform.localRotation =
 			Quaternion.Euler(
 				m_PieceObj.transform.localRotation.x,
 				m_PieceObj.transform.localRotation.y,
-				colorType == ColorType.Black ? 0f : 180f
+				colorType == PieceColorType.Black ? 0f : 180f
 			);
 	}
+
+	public static PieceColorType GetReverseColor(PieceColorType colorType) => (colorType == PieceColorType.White) ? PieceColorType.Black : PieceColorType.White;
 
 	public void OnPressed()
 	{
@@ -52,10 +54,10 @@ public class BoardSquare : MonoBehaviour, IBoardSquare
 	public void UnFocus() => m_FocusEffectObj.SetActive(false);
 	public bool IsFocus => m_FocusEffectObj.activeSelf;
 
-	public bool IsEmpty() => m_CurrentColor == ColorType.None;
+	public bool IsEmpty() => m_CurrentColor == PieceColorType.None;
 }
 
-public enum ColorType
+public enum PieceColorType
 {
 	None = 0,
 	Black = 1,

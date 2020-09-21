@@ -4,7 +4,7 @@ using UnityEngine;
 
 public interface IBoardSquare
 {
-	void PutPiece(GameObject pieceObj, ColorType colorType);
+	void PutPiece(GameObject pieceObj, PieceColorType colorType);
 	void Focus();
 	void UnFocus();
 }
