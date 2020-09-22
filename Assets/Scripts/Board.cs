@@ -35,13 +35,13 @@ public class Board : MonoBehaviour
 		CreateAndPutPiece(new Address(3, 4), PieceColorType.Black);
 		CreateAndPutPiece(new Address(4, 4), PieceColorType.White);
 
-		SetCurrentTurn(PieceColorType.White);
+		FinishTurn(PieceColorType.White);
 	}
 
-	private void SetCurrentTurn(PieceColorType colorType)
+	private void FinishTurn(PieceColorType nextColorType)
 	{
-		m_CurrentTurnColor = colorType;
-		BoardManager.I.SetCurrentTurnText(colorType);
+		m_CurrentTurnColor = nextColorType;
+		BoardManager.I.UpdateBoardUIInfo(nextColorType);
 	}
 
 	private void TryPutPiece(Address putPos)
@@ -77,7 +77,24 @@ public class Board : MonoBehaviour
 		PieceColorType changeColorType = (m_CurrentTurnColor == PieceColorType.Black) ?
 			PieceColorType.White : PieceColorType.Black;
 
-		SetCurrentTurn(changeColorType);
+		FinishTurn(changeColorType);
+	}
+
+	public int GetTargetColorCount(PieceColorType targetColorType)
+	{
+		int resultCount = 0;
+		for (int y = 0; y < Address.MAX_WIDTH; y++)
+		{
+			for (int x = 0; x < Address.MAX_WIDTH; x++)
+			{
+				if (m_BoardSquares[x, y].CurrentColor == targetColorType)
+				{
+					resultCount++;
+				}
+			}
+		}
+
+		return resultCount;
 	}
 }
 

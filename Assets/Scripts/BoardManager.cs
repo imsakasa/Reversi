@@ -19,8 +19,29 @@ public sealed class BoardManager : MonoBehaviour
 		}
 	}
 
-	public void SetCurrentTurnText(PieceColorType colorType)
+	private void Finish()
 	{
-		m_BoardUI.SetCurrentTurnText(colorType);
+		Debug.LogError("==終了===");
+	}
+
+	public int GetTargetColorCount(PieceColorType targetColorType)
+	{
+		return m_Board.GetTargetColorCount(targetColorType);
+	}
+
+	public void UpdateBoardUIInfo(PieceColorType nextColorType)
+	{
+		int blackCount = GetTargetColorCount(PieceColorType.Black);
+		int whiteCount = GetTargetColorCount(PieceColorType.White);
+		m_BoardUI.SetBlackCountText(blackCount);
+		m_BoardUI.SetWhiteCountText(whiteCount);
+
+		m_BoardUI.SetCurrentTurnText(nextColorType);
+
+		int emptyCount = GetTargetColorCount(PieceColorType.None);
+		if (emptyCount == 0)
+		{
+			Finish();
+		}
 	}
 }
