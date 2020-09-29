@@ -54,7 +54,10 @@ public class Board : MonoBehaviour
 		CreateAndPutPiece(putPos, m_CurrentTurnColor);
 		ReverseSandwichedPieces(putPos);
 
-		ChangeTurn();
+		if (m_BoardAnalyzer.CanPutPieceSomeWhere(m_BoardSquares, BoardSquare.GetReverseColor(m_CurrentTurnColor)))
+		{
+			ChangeTurn();
+		}
 	}
 
 	private void CreateAndPutPiece(Address pos, PieceColorType pieceColorType)

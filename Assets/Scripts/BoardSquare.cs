@@ -11,13 +11,13 @@ public class BoardSquare : MonoBehaviour, IBoardSquare
 	public PieceColorType CurrentColor => m_CurrentColor;
 
 	private GameObject m_PieceObj { get; set; }
-	private Address m_Address;
+	public Address Address { get; private set; }
 
 	private Action<Address> m_onPressed;
 
 	public void Setup(Address address, Action<Address> onPredded)
 	{
-		m_Address = address;
+		Address = address;
 		m_onPressed = onPredded;
 	}
 
@@ -47,7 +47,7 @@ public class BoardSquare : MonoBehaviour, IBoardSquare
 
 	public void OnPressed()
 	{
-		m_onPressed.Invoke(m_Address);
+		m_onPressed.Invoke(Address);
 	}
 
 	public void Focus() => m_FocusEffectObj.SetActive(true);

@@ -20,7 +20,7 @@ public class BoardAnalyzer
 
 	private BoardSquare GetSquare(BoardSquare[,] squares, Address pos) => squares[pos.X, pos.Y];
 
-	public bool CanPutPiece(BoardSquare[,] boardSquares, PieceColorType currentTurnColor, Address pos)
+	public bool CanPutPiece(BoardSquare[,] boardSquares, PieceColorType putPieceColor, Address pos)
 	{
 		var square = GetSquare(boardSquares, pos);
 		if (!square.IsEmpty())
@@ -29,7 +29,7 @@ public class BoardAnalyzer
 			return false;
 		}
 
-		var reverseTargetSquareList = GetReverseTargetSquares(boardSquares, pos, currentTurnColor);
+		var reverseTargetSquareList = GetReverseTargetSquares(boardSquares, pos, putPieceColor);
 		if (reverseTargetSquareList.Count == 0)
 		{
 			Debug.LogError("===このマスには置けません==");
@@ -39,21 +39,43 @@ public class BoardAnalyzer
 		return true;
 	}
 
-	private Dictionary<Direction, Address> GetAdjacentSquares(BoardSquare[,] boardSquares, Address pos)
+	public bool CanPutPieceSomeWhere(BoardSquare[,] boardSquares, PieceColorType putPieceColor)
 	{
-		var adjacentSquareDic = new Dictionary<Direction, Address>();
+		// 盤上にある置こうとしてる色とは反対の色のマスを取得
+		var targetColorSquares = GetTargetColorSquares(boardSquares, BoardSquare.GetReverseColor(putPieceColor));
+		foreach (var square in targetColorSquares)
+		{
+			// 隣接するマスを取得(最大8マス)
+			var adjacentSquareDic = GetAdjacentSquares(square.Address);
+			foreach (var dic in adjacentSquareDic)
+			{
+				var adjacentSquare = GetSquare(boardSquares, dic.Value);
+				if (CanPutPiece(boardSquares, putPieceColor, adjacentSquare.Address))
+				{
+					return true;
+				}
+			}
+		}
 
-		// 隣接するマスを取得(最大8マス)
-		TryRegisterSquare(Direction.Up,	pos, adjacentSquareDic);
-		TryRegisterSquare(Direction.Down, pos, adjacentSquareDic);
-		TryRegisterSquare(Direction.Left, pos, adjacentSquareDic);
-		TryRegisterSquare(Direction.Right, pos, adjacentSquareDic);
-		TryRegisterSquare(Direction.UpperLeft, pos, adjacentSquareDic);
-		TryRegisterSquare(Direction.UpperRight, pos, adjacentSquareDic);
-		TryRegisterSquare(Direction.LowerLeft, pos, adjacentSquareDic);
-		TryRegisterSquare(Direction.LowerRight, pos, adjacentSquareDic);
+		return false;
+	}
 
-		return adjacentSquareDic;
+	private List<BoardSquare> GetTargetColorSquares(BoardSquare[,] boardSquares, PieceColorType targetColor)
+	{
+		var targetColorSquares = new List<BoardSquare>();
+		for (int x = 0; x < Address.MAX_WIDTH; x++)
+		{
+			for (int y = 0; y < Address.MAX_WIDTH; y++)
+			{
+				var square = boardSquares[x, y];
+				if (square.CurrentColor == targetColor)
+				{
+					targetColorSquares.Add(square);
+				}
+			}
+		}
+
+		return targetColorSquares;
 	}
 
 	private void TryRegisterSquare(Direction direction, Address pos, Dictionary<Direction, Address> squareDic)
@@ -106,7 +128,7 @@ public class BoardAnalyzer
 		var reverseTargetSquareList = new List<BoardSquare>();
 
 		// 隣接するマスを取得(最大8マス)
-		var adjacentSquareDic = GetAdjacentSquares(boardSquares, putPos);
+		var adjacentSquareDic = GetAdjacentSquares( putPos);
 		// 隣接するマスから現在の色と反対色のマスを取得
 		var reverseColorSquareDic = GetTargetColorSquare(boardSquares, adjacentSquareDic, BoardSquare.GetReverseColor(currentColor));
 		if (reverseColorSquareDic.Count == 0)
@@ -137,7 +159,7 @@ public class BoardAnalyzer
 				{
 					reservationSquareList.Add(square);
 				}
-				else if(square.CurrentColor == PieceColorType.None)
+				else if(square.IsEmpty())
 				{
 					break;
 				}
@@ -146,5 +168,22 @@ public class BoardAnalyzer
 		}
 
 		return reverseTargetSquareList;
+	}
+
+	private Dictionary<Direction, Address> GetAdjacentSquares(Address pos)
+	{
+		var adjacentSquareDic = new Dictionary<Direction, Address>();
+
+		// 隣接するマスを取得(最大8マス)
+		TryRegisterSquare(Direction.Up,	pos, adjacentSquareDic);
+		TryRegisterSquare(Direction.Down, pos, adjacentSquareDic);
+		TryRegisterSquare(Direction.Left, pos, adjacentSquareDic);
+		TryRegisterSquare(Direction.Right, pos, adjacentSquareDic);
+		TryRegisterSquare(Direction.UpperLeft, pos, adjacentSquareDic);
+		TryRegisterSquare(Direction.UpperRight, pos, adjacentSquareDic);
+		TryRegisterSquare(Direction.LowerLeft, pos, adjacentSquareDic);
+		TryRegisterSquare(Direction.LowerRight, pos, adjacentSquareDic);
+
+		return adjacentSquareDic;
 	}
 }
