@@ -1,1 +1,1 @@
-# Othello
+# Reversi
