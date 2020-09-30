@@ -18,6 +18,7 @@ public class BoardUI : MonoBehaviour
 	public void SetCurrentTurnText(PieceColorType colorType)
 	{
 		m_CurrentTurnText.text = colorType.ToString();
+		m_CurrentTurnText.color = (colorType == PieceColorType.White) ? Color.white : Color.black;
 	}
 
 	public void SetBlackCountText(int count)
