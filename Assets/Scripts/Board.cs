@@ -30,6 +30,7 @@ public class Board : MonoBehaviour
 			}
 		}
 
+		// 初期コマ配置
 		CreateAndPutPiece(new Address(4, 3), PieceColorType.Black);
 		CreateAndPutPiece(new Address(3, 3), PieceColorType.White);
 		CreateAndPutPiece(new Address(3, 4), PieceColorType.Black);
@@ -38,10 +39,10 @@ public class Board : MonoBehaviour
 		FinishTurn(PieceColorType.White);
 	}
 
-	private void FinishTurn(PieceColorType nextColorType)
+	private void FinishTurn(PieceColorType nextTurnColor)
 	{
-		m_CurrentTurnColor = nextColorType;
-		BoardManager.I.UpdateBoardUIInfo(nextColorType);
+		m_CurrentTurnColor = nextTurnColor;
+		BoardManager.I.UpdateBoardUIInfo(nextTurnColor);
 	}
 
 	private void TryPutPiece(Address putPos)
@@ -54,10 +55,10 @@ public class Board : MonoBehaviour
 		CreateAndPutPiece(putPos, m_CurrentTurnColor);
 		ReverseSandwichedPieces(putPos);
 
-		if (m_BoardAnalyzer.CanPutPieceSomeWhere(m_BoardSquares, BoardSquare.GetReverseColor(m_CurrentTurnColor)))
-		{
-			ChangeTurn();
-		}
+		bool canChangeTurn = m_BoardAnalyzer.CanPutPieceSomeWhere(m_BoardSquares, BoardSquare.GetReverseColor(m_CurrentTurnColor));
+		var nextTurnColor = canChangeTurn ? BoardSquare.GetReverseColor(m_CurrentTurnColor) : m_CurrentTurnColor;
+
+		FinishTurn(nextTurnColor);
 	}
 
 	private void CreateAndPutPiece(Address pos, PieceColorType pieceColorType)
@@ -75,12 +76,10 @@ public class Board : MonoBehaviour
 		}
 	}
 
-	private void ChangeTurn()
+	private void ChangeTurnColor()
 	{
-		PieceColorType changeColorType = (m_CurrentTurnColor == PieceColorType.Black) ?
+		m_CurrentTurnColor = (m_CurrentTurnColor == PieceColorType.Black) ?
 			PieceColorType.White : PieceColorType.Black;
-
-		FinishTurn(changeColorType);
 	}
 
 	public int GetTargetColorCount(PieceColorType targetColorType)
@@ -98,6 +97,18 @@ public class Board : MonoBehaviour
 		}
 
 		return resultCount;
+	}
+
+	private void DebugPutPiece(int x)
+	{
+		int seed = Environment.TickCount;
+		for (int i = 0; i < Address.MAX_WIDTH; i++)
+		{
+			var rand = new System.Random(seed++);
+			var randColor = (PieceColorType)rand.Next((int)PieceColorType.Black, (int)PieceColorType.White + 1);
+
+			CreateAndPutPiece(new Address(x, i), randColor);
+		}
 	}
 }
 

@@ -25,14 +25,12 @@ public class BoardAnalyzer
 		var square = GetSquare(boardSquares, pos);
 		if (!square.IsEmpty())
 		{
-			Debug.LogError("===このマスはすでに置かれています==");
 			return false;
 		}
 
 		var reverseTargetSquareList = GetReverseTargetSquares(boardSquares, pos, putPieceColor);
 		if (reverseTargetSquareList.Count == 0)
 		{
-			Debug.LogError("===このマスには置けません==");
 			return false;
 		}
 
