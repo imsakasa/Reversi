@@ -15,6 +15,16 @@ public class BoardUI : MonoBehaviour
 	[SerializeField]
 	private TextMeshProUGUI m_WhiteCountText;
 
+	[SerializeField]
+	private GameObject m_ResultDialog;
+	[SerializeField]
+	private TextMeshProUGUI m_ResultColorText;
+
+	void Start()
+	{
+		HideResultDialog();
+	}
+
 	public void SetCurrentTurnText(PieceColorType colorType)
 	{
 		m_CurrentTurnText.text = colorType.ToString();
@@ -30,4 +40,12 @@ public class BoardUI : MonoBehaviour
 	{
 		m_WhiteCountText.text = count.ToString();
 	}
+
+	public void ShowResultDialog(PieceColorType winColor)
+	{
+		m_ResultColorText.text = (winColor == PieceColorType.White) ? "WHITE" : "BLACK";
+		m_CurrentTurnText.color = (winColor == PieceColorType.White) ? Color.white : Color.black;
+		m_ResultDialog.SetActive(true);
+	}
+	public void HideResultDialog() => m_ResultDialog.SetActive(false);
 }

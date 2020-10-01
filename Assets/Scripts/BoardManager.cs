@@ -21,7 +21,8 @@ public sealed class BoardManager : MonoBehaviour
 
 	private void Finish()
 	{
-		Debug.LogError("==終了===");
+		var winnerColorType = CalcMoreCountColor();
+		m_BoardUI.ShowResultDialog(winnerColorType);
 	}
 
 	public int GetTargetColorCount(PieceColorType targetColorType)
@@ -43,5 +44,13 @@ public sealed class BoardManager : MonoBehaviour
 		{
 			Finish();
 		}
+	}
+
+	private PieceColorType CalcMoreCountColor()
+	{
+		int blackCount = GetTargetColorCount(PieceColorType.Black);
+		int whiteCount = GetTargetColorCount(PieceColorType.White);
+
+		return (blackCount > whiteCount) ? PieceColorType.Black : PieceColorType.White;
 	}
 }
