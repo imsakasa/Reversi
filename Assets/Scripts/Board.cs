@@ -82,23 +82,32 @@ public class Board : MonoBehaviour
 			PieceColorType.White : PieceColorType.Black;
 	}
 
-	public int GetTargetColorCount(PieceColorType targetColorType)
+	public ColorCountInfo GetColorCountInfo()
 	{
-		int resultCount = 0;
+		var colorInfo = new ColorCountInfo();
 		for (int y = 0; y < Address.MAX_WIDTH; y++)
 		{
 			for (int x = 0; x < Address.MAX_WIDTH; x++)
 			{
-				if (m_BoardSquares[x, y].CurrentColor == targetColorType)
+				switch (m_BoardSquares[x, y].CurrentColor)
 				{
-					resultCount++;
+					case PieceColorType.None:
+						colorInfo.None++;
+						break;
+					case PieceColorType.Black:
+						colorInfo.Black++;
+						break;
+					case PieceColorType.White:
+						colorInfo.White++;
+						break;
 				}
 			}
 		}
 
-		return resultCount;
+		return colorInfo;
 	}
 
+	#region DEBUG
 	private void DebugPutPiece(int x)
 	{
 		int seed = Environment.TickCount;
@@ -110,6 +119,7 @@ public class Board : MonoBehaviour
 			CreateAndPutPiece(new Address(x, i), randColor);
 		}
 	}
+	#endregion
 }
 
 public struct Address

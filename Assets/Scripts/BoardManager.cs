@@ -25,22 +25,16 @@ public sealed class BoardManager : MonoBehaviour
 		m_BoardUI.ShowResultDialog(winnerColorType);
 	}
 
-	public int GetTargetColorCount(PieceColorType targetColorType)
-	{
-		return m_Board.GetTargetColorCount(targetColorType);
-	}
+	public ColorCountInfo GetColorCountInfo() => m_Board.GetColorCountInfo();
 
 	public void UpdateBoardUIInfo(PieceColorType nextColorType)
 	{
-		int blackCount = GetTargetColorCount(PieceColorType.Black);
-		int whiteCount = GetTargetColorCount(PieceColorType.White);
-		m_BoardUI.SetBlackCountText(blackCount);
-		m_BoardUI.SetWhiteCountText(whiteCount);
-
 		m_BoardUI.SetCurrentTurnText(nextColorType);
 
-		int emptyCount = GetTargetColorCount(PieceColorType.None);
-		if (emptyCount == 0)
+		var colorCountInfo = GetColorCountInfo();
+		m_BoardUI.SetBlackCountText(colorCountInfo.Black);
+		m_BoardUI.SetWhiteCountText(colorCountInfo.White);
+		if (colorCountInfo.None == 0)
 		{
 			Finish();
 		}
@@ -48,9 +42,19 @@ public sealed class BoardManager : MonoBehaviour
 
 	private PieceColorType CalcMoreCountColor()
 	{
-		int blackCount = GetTargetColorCount(PieceColorType.Black);
-		int whiteCount = GetTargetColorCount(PieceColorType.White);
+		var colorCountInfo = GetColorCountInfo();
+		if (colorCountInfo.Black == colorCountInfo.White)
+		{
+			return PieceColorType.None;
+		}
 
-		return (blackCount > whiteCount) ? PieceColorType.Black : PieceColorType.White;
+		return (colorCountInfo.Black > colorCountInfo.White) ? PieceColorType.Black : PieceColorType.White;
 	}
+}
+
+public struct ColorCountInfo
+{
+	public int None;
+	public int Black;
+	public int White;
 }

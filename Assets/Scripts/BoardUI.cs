@@ -43,9 +43,26 @@ public class BoardUI : MonoBehaviour
 
 	public void ShowResultDialog(PieceColorType winColor)
 	{
-		m_ResultColorText.text = (winColor == PieceColorType.White) ? "WHITE" : "BLACK";
-		m_CurrentTurnText.color = (winColor == PieceColorType.White) ? Color.white : Color.black;
+		m_ResultColorText.text = GetResultColorText(winColor);
 		m_ResultDialog.SetActive(true);
 	}
 	public void HideResultDialog() => m_ResultDialog.SetActive(false);
+
+	private string GetResultColorText(PieceColorType winColor)
+	{
+		switch (winColor)
+		{
+			case PieceColorType.None:
+				return "DRAW";
+
+			case PieceColorType.Black:
+				return "WHITE WIN !";
+
+			case PieceColorType.White:
+				return "BLACK WIN !";
+
+			default:
+				return "";
+		}
+	}
 }
