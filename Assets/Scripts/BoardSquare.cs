@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 public class BoardSquare : MonoBehaviour, IBoardSquare
 {
@@ -24,23 +25,32 @@ public class BoardSquare : MonoBehaviour, IBoardSquare
 	public void PutPiece(GameObject pieceObj, PieceColorType pieceColorType)
 	{
 		m_PieceObj = pieceObj;
-		UpdateColorType(pieceColorType);
+		m_CurrentColor = pieceColorType;
+		m_PieceObj.transform.localRotation = GetPieceQuaternion(pieceColorType);
 	}
 
 	public void Reverse()
 	{
-		UpdateColorType(GetReverseColor(m_CurrentColor));
+		PieceColorType reverseColor = GetReverseColor(m_CurrentColor);
+		m_CurrentColor = reverseColor;
+		ReverseAnimation(reverseColor);
 	}
 
-	private void UpdateColorType(PieceColorType colorType)
+	private void ReverseAnimation(PieceColorType colorType)
 	{
-		m_CurrentColor = colorType;
-		m_PieceObj.transform.localRotation =
-			Quaternion.Euler(
+		Sequence seq = DOTween.Sequence();
+		seq.Append(m_PieceObj.transform.DOLocalMoveY(1.5f, 0.5f).SetRelative());
+		seq.Join(m_PieceObj.transform.DOLocalRotateQuaternion(
+			GetPieceQuaternion(colorType), 0.5f)
+		);
+	}
+
+	private Quaternion GetPieceQuaternion(PieceColorType colorType)
+	{
+		return Quaternion.Euler(
 				m_PieceObj.transform.localRotation.x,
 				m_PieceObj.transform.localRotation.y,
-				colorType == PieceColorType.Black ? 0f : 180f
-			);
+				colorType == PieceColorType.Black ? 0f : 180f);
 	}
 
 	public static PieceColorType GetReverseColor(PieceColorType colorType) => (colorType == PieceColorType.White) ? PieceColorType.Black : PieceColorType.White;
