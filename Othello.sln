@@ -7,8 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UniTask", "UniTask.csproj",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UniTask.Linq", "UniTask.Linq.csproj", "{943eda96-740d-8258-d09e-9f9de56e228b}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UniRx.Examples", "UniRx.Examples.csproj", "{4ef674c0-5a8e-9475-cd57-2bb62bf4e0bb}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly-CSharp-firstpass", "Assembly-CSharp-firstpass.csproj", "{fa8f9fa0-58f2-a619-4cdc-f5fdd1744e55}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly-CSharp", "Assembly-CSharp.csproj", "{e72584e8-b38d-eef7-3ac7-7f5a7a72f3e8}"
@@ -32,8 +30,6 @@ Global
 		{b1a91d1b-a6ef-aedd-7430-3cd602da1829}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{943eda96-740d-8258-d09e-9f9de56e228b}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{943eda96-740d-8258-d09e-9f9de56e228b}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4ef674c0-5a8e-9475-cd57-2bb62bf4e0bb}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4ef674c0-5a8e-9475-cd57-2bb62bf4e0bb}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{fa8f9fa0-58f2-a619-4cdc-f5fdd1744e55}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{fa8f9fa0-58f2-a619-4cdc-f5fdd1744e55}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{e72584e8-b38d-eef7-3ac7-7f5a7a72f3e8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU

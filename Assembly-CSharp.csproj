@@ -624,6 +624,31 @@
       <Name>Assembly-CSharp-firstpass</Name>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
+    <ProjectReference Include="UniTask.Addressables.csproj">
+      <Project>{1be61a2a-130a-34db-dac5-17b7130a4312}</Project>
+      <Name>UniTask.Addressables</Name>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="UniTask.csproj">
+      <Project>{b1a91d1b-a6ef-aedd-7430-3cd602da1829}</Project>
+      <Name>UniTask</Name>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="UniTask.DOTween.csproj">
+      <Project>{e4dc1a89-e5a4-41e9-6b3d-6dcd7fb8aa9f}</Project>
+      <Name>UniTask.DOTween</Name>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="UniTask.TextMeshPro.csproj">
+      <Project>{2d685936-ebd3-20e8-010b-aca302bede55}</Project>
+      <Name>UniTask.TextMeshPro</Name>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="UniTask.Linq.csproj">
+      <Project>{943eda96-740d-8258-d09e-9f9de56e228b}</Project>
+      <Name>UniTask.Linq</Name>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
     <ProjectReference Include="UniRx.csproj">
       <Project>{f4c32548-5a61-4dd5-23bf-a3a20b708b69}</Project>
       <Name>UniRx</Name>
