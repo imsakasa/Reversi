@@ -44,6 +44,8 @@
      <Compile Include="Assets\Scripts\Extension\GameObjectExtensions.cs" />
      <Compile Include="Assets\Scripts\IBoardSquare.cs" />
      <Compile Include="Assets\Scripts\Player.cs" />
+     <Compile Include="Assets\Scripts\SingletonMonoBehaviour.cs" />
+     <Compile Include="Assets\Scripts\SoundManager.cs" />
     <Reference Include="UnityEngine">
         <HintPath>/Applications/Unity/Hub/Editor/2019.4.0f1/Unity.app/Contents/Managed/UnityEngine/UnityEngine.dll</HintPath>
     </Reference>
