@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.Events;
 using TMPro;
 
 public class BoardUI : MonoBehaviour
@@ -20,8 +22,13 @@ public class BoardUI : MonoBehaviour
 	[SerializeField]
 	private TextMeshProUGUI m_ResultColorText;
 
-	void Start()
+	[SerializeField]
+	private Button m_CloseButton;
+
+	public void Setup(UnityAction onClose)
 	{
+		m_CloseButton.onClick.AddListener(onClose + HideResultDialog);
+
 		HideResultDialog();
 	}
 

@@ -22,6 +22,15 @@ public class BoardSquare : MonoBehaviour, IBoardSquare
 		m_onPressed = onPredded;
 	}
 
+	public void Reset()
+	{
+		m_CurrentColor = PieceColorType.None;
+		if (m_PieceObj != null)
+		{
+			Destroy(m_PieceObj);
+		}
+	}
+
 	public void PutPiece(GameObject pieceObj, PieceColorType pieceColorType)
 	{
 		m_PieceObj = pieceObj;

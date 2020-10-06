@@ -3,20 +3,21 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public sealed class BoardManager : MonoBehaviour
+public sealed class BoardManager : SingletonMonoBehaviour<BoardManager>
 {
-	private static BoardManager m_Instance;
-	public static BoardManager I => m_Instance;
-
 	[SerializeField] private Board m_Board;
 	[SerializeField] private BoardUI m_BoardUI;
 
-	void Awake()
+	new void Awake()
 	{
-		if (m_Instance == null)
-		{
-			m_Instance = this;
-		}
+		base.Awake();
+
+		m_BoardUI.Setup(InitBoard);
+	}
+
+	private void InitBoard()
+	{
+		m_Board.InitBoard();
 	}
 
 	private void Finish()
@@ -25,7 +26,7 @@ public sealed class BoardManager : MonoBehaviour
 		m_BoardUI.ShowResultDialog(winnerColorType);
 	}
 
-	public ColorCountInfo GetColorCountInfo() => m_Board.GetColorCountInfo();
+	private ColorCountInfo GetColorCountInfo() => m_Board.GetColorCountInfo();
 
 	public void UpdateBoardUIInfo(PieceColorType nextColorType)
 	{

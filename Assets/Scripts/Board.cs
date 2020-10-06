@@ -30,6 +30,19 @@ public class Board : MonoBehaviour
 			}
 		}
 
+		InitBoard();
+	}
+
+	public void InitBoard()
+	{
+		for (int y = 0; y < Address.MAX_WIDTH; y++)
+		{
+			for (int x = 0; x < Address.MAX_WIDTH; x++)
+			{
+				m_BoardSquares[x, y].Reset();
+			}
+		}
+
 		// 初期コマ配置
 		CreateAndPutPiece(new Address(4, 3), PieceColorType.Black);
 		CreateAndPutPiece(new Address(3, 3), PieceColorType.White);

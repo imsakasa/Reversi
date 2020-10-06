@@ -63,7 +63,7 @@ public class SoundManager : SingletonMonoBehaviour<SoundManager>
 
 	void Start()
 	{
-		if (this != Instance)
+		if (this != I)
 		{
 			Destroy(gameObject);
 			return;

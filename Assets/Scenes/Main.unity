@@ -518,6 +518,7 @@ MonoBehaviour:
   m_WhiteCountText: {fileID: 1343001785}
   m_ResultDialog: {fileID: 176230810}
   m_ResultColorText: {fileID: 5742812}
+  m_CloseButton: {fileID: 1844788349}
 --- !u!1 &424335163
 GameObject:
   m_ObjectHideFlags: 0
@@ -2721,7 +2722,7 @@ GameObject:
   - component: {fileID: 1844788350}
   - component: {fileID: 1844788349}
   m_Layer: 5
-  m_Name: Button
+  m_Name: CloseButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
