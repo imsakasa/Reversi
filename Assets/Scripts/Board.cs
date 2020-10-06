@@ -31,6 +31,8 @@ public class Board : MonoBehaviour
 		}
 
 		InitBoard();
+
+		SoundManager.I.PlayBgmByName("play");
 	}
 
 	public void InitBoard()
