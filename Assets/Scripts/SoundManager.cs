@@ -10,7 +10,7 @@ public class SoundManager : SingletonMonoBehaviour<SoundManager>
 	[SerializeField, Range(0, 1), Tooltip("SEの音量")] float m_SeVolume = 1f;
 
 	AudioClip[] m_Bgm;
-	AudioClip[] m_Se;
+	AudioClip[] m_SE;
 
 	Dictionary<string, int> m_BgmIndex = new Dictionary<string, int>();
 	Dictionary<string, int> m_SeIndex = new Dictionary<string, int>();
@@ -75,16 +75,16 @@ public class SoundManager : SingletonMonoBehaviour<SoundManager>
 		m_SeAudioSource = gameObject.AddComponent<AudioSource>();
 
 		m_Bgm = Resources.LoadAll<AudioClip>("Audio/BGM");
-		m_Se = Resources.LoadAll<AudioClip>("Audio/SE");
+		m_SE = Resources.LoadAll<AudioClip>("Audio/SE");
 
 		for (int i = 0; i < m_Bgm.Length; i++)
 		{
 			m_BgmIndex.Add(m_Bgm[i].name, i);
 		}
 
-		for (int i = 0; i < m_Se.Length; i++)
+		for (int i = 0; i < m_SE.Length; i++)
 		{
-			m_SeIndex.Add(m_Se[i].name, i);
+			m_SeIndex.Add(m_SE[i].name, i);
 		}
 	}
 
@@ -135,18 +135,18 @@ public class SoundManager : SingletonMonoBehaviour<SoundManager>
 		m_BgmAudioSource.clip = null;
 	}
 
-	public void PlaySe(int index)
+	public void PlaySE(int index)
 	{
-		index = Mathf.Clamp(index, 0, m_Se.Length);
-		m_SeAudioSource.PlayOneShot(m_Se[index], SeVolume * Volume);
+		index = Mathf.Clamp(index, 0, m_SE.Length);
+		m_SeAudioSource.PlayOneShot(m_SE[index], SeVolume * Volume);
 	}
 
-	public void PlaySeByName(string name)
+	public void PlaySEByName(string name)
 	{
-		PlaySe(GetSeIndex(name));
+		PlaySE(GetSeIndex(name));
 	}
 
-	public void StopSe()
+	public void StopSE()
 	{
 		m_SeAudioSource.Stop();
 		m_SeAudioSource.clip = null;

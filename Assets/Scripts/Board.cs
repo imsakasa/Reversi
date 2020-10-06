@@ -68,6 +68,8 @@ public class Board : MonoBehaviour
 		CreateAndPutPiece(putPos, m_CurrentTurnColor);
 		ReverseSandwichedPieces(putPos);
 
+		SoundManager.I.PlaySEByName("put");
+
 		bool canChangeTurn = m_BoardAnalyzer.CanPutPieceSomeWhere(m_BoardSquares, BoardSquare.GetReverseColor(m_CurrentTurnColor));
 		var nextTurnColor = canChangeTurn ? BoardSquare.GetReverseColor(m_CurrentTurnColor) : m_CurrentTurnColor;
 
