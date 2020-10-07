@@ -6,6 +6,11 @@ using DG.Tweening;
 
 public class BoardSquare : MonoBehaviour, IBoardSquare
 {
+	private static readonly float PUT_ANIM_MOVE_Y_AMOUNT = 1f;
+	private static readonly float PUT_ANIM_TIME = 0.3f;
+	private static readonly float BLACK_ROTATE = 0f;
+	private static readonly float WHITE_ROTATE = 180f;
+
 	[SerializeField] private GameObject m_FocusEffectObj;
 
 	private PieceColorType m_CurrentColor = PieceColorType.None;
@@ -48,10 +53,10 @@ public class BoardSquare : MonoBehaviour, IBoardSquare
 	private void ReverseAnimation(PieceColorType colorType)
 	{
 		Sequence seq = DOTween.Sequence();
-		seq.Append(m_PieceObj.transform.DOLocalMoveY(1.5f, 0.5f).SetRelative());
+		seq.Append(m_PieceObj.transform.DOLocalMoveY(PUT_ANIM_MOVE_Y_AMOUNT, PUT_ANIM_TIME).SetRelative());
 		seq.Join(m_PieceObj.transform.DOLocalRotateQuaternion(
-			GetPieceQuaternion(colorType), 0.5f)
-		);
+			GetPieceQuaternion(colorType), PUT_ANIM_TIME));
+		seq.Append(m_PieceObj.transform.DOLocalMoveY(-PUT_ANIM_MOVE_Y_AMOUNT, PUT_ANIM_TIME).SetRelative());
 	}
 
 	private Quaternion GetPieceQuaternion(PieceColorType colorType)
@@ -59,7 +64,7 @@ public class BoardSquare : MonoBehaviour, IBoardSquare
 		return Quaternion.Euler(
 				m_PieceObj.transform.localRotation.x,
 				m_PieceObj.transform.localRotation.y,
-				colorType == PieceColorType.Black ? 0f : 180f);
+				colorType == PieceColorType.Black ? BLACK_ROTATE : WHITE_ROTATE);
 	}
 
 	public static PieceColorType GetReverseColor(PieceColorType colorType) => (colorType == PieceColorType.White) ? PieceColorType.Black : PieceColorType.White;

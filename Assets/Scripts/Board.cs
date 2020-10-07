@@ -80,7 +80,7 @@ public class Board : MonoBehaviour
 
 	private void CreateAndPutPiece(Address pos, PieceColorType pieceColorType)
 	{
-		var pieceObj = Instantiate(m_PieceObj, new Vector3(pos.X, 1f, -pos.Y), Quaternion.identity);
+		var pieceObj = Instantiate(m_PieceObj, new Vector3(pos.X, 0.6f, -pos.Y), Quaternion.identity);
 		GetSquare(pos).PutPiece(pieceObj, pieceColorType);
 	}
 
