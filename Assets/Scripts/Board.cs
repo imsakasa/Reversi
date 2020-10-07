@@ -11,11 +11,14 @@ public class Board : MonoBehaviour
 	readonly BoardSquare[,] m_BoardSquares = new BoardSquare[Address.MAX_WIDTH, Address.MAX_WIDTH];
 	public BoardSquare GetSquare(Address pos) => m_BoardSquares[pos.X, pos.Y];
 
-	private BoardAnalyzer m_BoardAnalyzer = new BoardAnalyzer();
+	[SerializeField]
+	private GameObject m_PieceObj;
 
-	[SerializeField] private GameObject m_PieceObj;
+	[SerializeField]
+	private Transform m_PieceRoot;
 
 	private PieceColorType m_CurrentTurnColor;
+	private BoardAnalyzer m_BoardAnalyzer = new BoardAnalyzer();
 
 	void Start()
 	{
@@ -80,7 +83,7 @@ public class Board : MonoBehaviour
 
 	private void CreateAndPutPiece(Address pos, PieceColorType pieceColorType)
 	{
-		var pieceObj = Instantiate(m_PieceObj, new Vector3(pos.X, 0.6f, -pos.Y), Quaternion.identity);
+		var pieceObj = Instantiate(m_PieceObj, new Vector3(pos.X, 0.6f, -pos.Y), Quaternion.identity, m_PieceRoot);
 		GetSquare(pos).PutPiece(pieceObj, pieceColorType);
 	}
 
