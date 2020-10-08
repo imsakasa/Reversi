@@ -2,7 +2,7 @@
 
 Reversi is famous board game.
 
-![Reversi](https://github.com/kazusa7/Reversi/blob/master/Reversi.png)
+![Reversi](https://github.com/kazusa7/Reversi/blob/master/Reversi.gif)
 
 # About
 * This is played by two people.
